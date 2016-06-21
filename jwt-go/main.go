@@ -15,6 +15,18 @@ const (
 	pubKeyPath  = "keys/app.rsa.pub" // openssl rsa -in keys/app.rsa -pubout > keys/app.rsa.pub
 )
 
+var signKey []byte
+
+func init() {
+	var err error
+	signKey, err = ioutil.ReadFile(privKeyPath)
+	if err != nil {
+		log.Fatal("Error reading private key")
+		os.Exit(1)
+	}
+
+}
+
 func main() {
 	token := createJWT()
 	fmt.Println("Created token", token)
@@ -30,13 +42,11 @@ func createJWT() string {
 		Role string
 	}{"josh", "admin"}
 
-	signKey, err := ioutil.ReadFile(privKeyPath)
+	tokenString, err := t.SignedString(signKey)
 	if err != nil {
-		log.Fatal("Error reading private key")
+		log.Fatal("Error signing the key")
 		os.Exit(1)
 	}
-
-	tokenString, err := t.SignedString(signKey)
 
 	return tokenString
 }
