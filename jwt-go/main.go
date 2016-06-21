@@ -18,6 +18,7 @@ const (
 func main() {
 	token := createJWT()
 	fmt.Println("Created token", token)
+	// eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NUb2tlbiI6ImxldmVsMSIsIkN1c3RvbVVzZXJJbmZvIjp7Ik5hbWUiOiJqb3NoIiwiUm9sZSI6ImFkbWluIn0sImV4cCI6MTQ2NjQ2Njg2MX0.5gJQd7ql7vtfwcHm6ZHUxN3zmukQNUoYDdpBQ3-B0WKIHwFo6Arg0D-tiDWVaW8C4oAWBtNMohlJsBaOTbv5vg
 }
 
 func createJWT() string {
