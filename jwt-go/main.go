@@ -34,15 +34,15 @@ func main() {
 }
 
 func createJWT() string {
-	t := jwt.New(jwt.SigningMethodHS512)
-	t.Claims["AccessToken"] = "level1"
-	t.Claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
-	t.Claims["CustomUserInfo"] = struct {
+	token := jwt.New(jwt.SigningMethodHS512)
+	token.Claims["AccessToken"] = "level1"
+	token.Claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
+	token.Claims["CustomUserInfo"] = struct {
 		Name string
 		Role string
 	}{"josh", "admin"}
 
-	tokenString, err := t.SignedString(signKey)
+	tokenString, err := token.SignedString(signKey)
 	if err != nil {
 		log.Fatal("Error signing the key")
 		os.Exit(1)
