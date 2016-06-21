@@ -33,12 +33,12 @@ func main() {
 
 func createJWT() string {
 	claims := jws.Claims{}
-	// claims.Set("AccessToken", "level1")
+	claims.Set("AccessToken", "level1")
 	signMethod := jws.GetSigningMethod("HS512")
 	token := jws.NewJWT(claims, signMethod)
 	byteToken, err := token.Serialize(signKey)
 	if err != nil {
-		log.Fatal("Error signing the key. ", err)
+		log.Fatal("Error serializing the key. ", err)
 		os.Exit(1)
 	}
 
