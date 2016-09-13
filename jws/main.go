@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-)
 
-import "github.com/SermoDigital/jose/jws"
+	"github.com/SermoDigital/jose/crypto"
+	"github.com/SermoDigital/jose/jws"
+)
 
 const (
 	privKeyPath = "keys/app.rsa"     // openssl genrsa -out keys/app.rsa 1024
@@ -15,6 +15,7 @@ const (
 )
 
 var signKey []byte
+var rsaPub []byte
 
 func init() {
 	var err error
@@ -24,14 +25,22 @@ func init() {
 		os.Exit(1)
 	}
 
+	var err2 error
+	rsaPub, err2 = ioutil.ReadFile(pubKeyPath)
+	if err2 != nil {
+		log.Fatal("Error reading public key")
+		os.Exit(1)
+	}
+
 }
 
 func main() {
 	token := createJWT()
-	fmt.Println("Created token", token)
+	// fmt.Println("Created token", token)
+	validateJWT(token)
 }
 
-func createJWT() string {
+func createJWT() []byte {
 	claims := jws.Claims{}
 	claims.Set("AccessToken", "level1")
 	signMethod := jws.GetSigningMethod("HS512")
@@ -42,5 +51,18 @@ func createJWT() string {
 		os.Exit(1)
 	}
 
-	return string(byteToken)
+	return byteToken
+}
+
+func validateJWT(token []byte) {
+	w, err := jws.ParseJWT(token)
+	if err != nil {
+		log.Fatal("Error parsing the token. ", err)
+		os.Exit(1)
+	}
+
+	if err := w.Validate(rsaPub, crypto.SigningMethodRS512); err != nil {
+		log.Fatal("Error validating the token. ", err)
+		os.Exit(1)
+	}
 }
